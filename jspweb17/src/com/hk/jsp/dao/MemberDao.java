@@ -1,0 +1,109 @@
+package com.hk.jsp.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class MemberDao {
+	
+	//접속정보 (공통)
+	private static String driveName = "com.mysql.jdbc.Driver";
+	private static 	String url = "jdbc:mysql://localhost:3306/jspweb";
+	private static String user = "jsp";
+	private static String password = "1234";
+	//SQL 변수 (공통)
+	private static Connection conn = null;
+	private static Statement stmt = null; // 복잡한 경우 PreparedStatement 전환 가능성
+	private static ResultSet rs = null;
+	//MemberDao 인스턴스 변수
+	private static MemberDao instance = null;
+	//생성자 (private) -> 싱글톤
+	public static MemberDao getInstance() {
+		if(instance==null) {
+			instance = new MemberDao();
+		}
+		return instance;
+	}
+	// 초기화 블럭
+	{
+		try{
+			Class.forName(driveName);
+			System.out.println("드라이버로딩성공");
+		}catch(Exception e) {
+			System.out.println("드라이버로딩실패");
+		}
+		
+	}
+	
+	//mysql 접속메소드 (공통)
+	private void connectDB() throws Exception {
+		if(conn==null) { // 접속이 안되었으면
+			conn=DriverManager.getConnection(url, user, password);
+			stmt = conn.createStatement();
+			System.out.println("데이터베이스접속성공");
+		}
+	}
+	// 접속을 종료하는 메소드
+	private void closeDB() {
+		try {
+			if(conn!=null) { conn.close(); conn=null; }
+			if(stmt!=null) { stmt.close(); stmt=null; }
+			if(rs!=null) { rs.close(); rs=null; }
+			System.out.println("데이터베이스접속종료완료");
+		}catch(SQLException e) {
+			System.out.println("데이터베이스 쿼리오류:"+e.getMessage());
+		}catch(Exception e2) {
+			System.out.println("데이터베이스 접속오류:"+e2.getMessage());
+		}
+	}
+
+	public void testDB() throws Exception {
+		connectDB();//사용후 closeDB()
+		//sql
+		closeDB();// 빼먹지 말아주세요
+	}
+	
+	// regmempro.jsp 에서 아이디중복체크
+	public int checkMemberById(String id) throws Exception {
+		int rst = 0; // 0이면 중복되지 않음
+		connectDB();
+		String sql = String.format("select count(id) as chk "
+				+ "from member where id='%s'",id);
+		rs = stmt.executeQuery(sql);
+		while(rs.next() ) {
+			rst = rs.getInt("chk"); // 숫자가 나오면 중복됨
+		}
+		closeDB();// 빼먹지 말아주세요
+		return rst;
+	}
+	
+	// loginpro.jsp 에서 아이디 비밀번호 인증체크
+	public int authMemberByIdPw(String id, String pw) throws Exception {
+		int rst=0;
+		String dbid = "";
+		String dbpw = "";
+		connectDB();
+		String sql = String.format("select id, pwd from member where id='%s'", id);
+		rs=stmt.executeQuery(sql);
+		while(rs.next() ) {
+			dbid = rs.getString("id");
+			dbpw = rs.getString("pwd");
+		}
+		// 비교
+		if(dbid.equals(id)) 
+		{
+			if(dbpw.equals(pw)) {
+				rst = 1; //로그인 성공
+			}else {
+				rst = -1; // 비밀번호 틀림
+			}
+		}else {
+			rst = 0;   // 아이디 틀림
+		}
+
+		return rst;
+	}
+	
+}
