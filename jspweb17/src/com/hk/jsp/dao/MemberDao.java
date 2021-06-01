@@ -1,10 +1,8 @@
 package com.hk.jsp.dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
+import com.hk.jsp.vo.MemberVo;
 
 public class MemberDao {
 	
@@ -16,6 +14,7 @@ public class MemberDao {
 	//SQL 변수 (공통)
 	private static Connection conn = null;
 	private static Statement stmt = null; // 복잡한 경우 PreparedStatement 전환 가능성
+	private static PreparedStatement pstmt = null;
 	private static ResultSet rs = null;
 	//MemberDao 인스턴스 변수
 	private static MemberDao instance = null;
@@ -50,6 +49,7 @@ public class MemberDao {
 		try {
 			if(conn!=null) { conn.close(); conn=null; }
 			if(stmt!=null) { stmt.close(); stmt=null; }
+			if(pstmt!=null) { pstmt.close(); pstmt=null; }
 			if(rs!=null) { rs.close(); rs=null; }
 			System.out.println("데이터베이스접속종료완료");
 		}catch(SQLException e) {
@@ -103,6 +103,42 @@ public class MemberDao {
 			rst = 0;   // 아이디 틀림
 		}
 
+		return rst;
+	}
+	
+	//  regpro.jsp 회원정보 저장
+	public int regMember(MemberVo memvo) throws Exception {
+		int rst = 0;
+		connectDB();
+		StringBuffer sb = new StringBuffer("");
+		sb.append("insert into member (id, pwd, name, email, zip_num, address, address2, phone, indate) ");
+		sb.append("\n values (?, ?, ?, ?, ?, ?, ?, ?,now() )");
+		String sql = sb.toString();
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, memvo.getId());
+		pstmt.setString(2, memvo.getPwd());
+		pstmt.setString(3, memvo.getName());
+		pstmt.setString(4, memvo.getEmail());
+		
+		pstmt.setString(5, memvo.getZip_num());
+		pstmt.setString(6, memvo.getAddress());
+		pstmt.setString(7, memvo.getAddress2());
+		pstmt.setString(8, memvo.getPhone());
+		rst = pstmt.executeUpdate();
+		closeDB();
+		return rst;		
+	}
+	
+	// mypage.jsp 회원정보
+	public String getMemberById(String id) throws Exception {
+		String rst = "";
+		connectDB();
+		String sql = String.format("select name from member where id='%s'",id);
+		rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			rst = rs.getString("name");
+		}
+		closeDB();
 		return rst;
 	}
 	

@@ -45,7 +45,8 @@
 </style>
 </head>
 <body>
-	<h3>심플 회원 로그인 및 회원가입</h3>
+	<br>
+	<h3>회원 로그인 및 회원가입</h3>
 	<br>
 	
 	<input type="checkbox" id="form-switch">
@@ -61,23 +62,21 @@
 		<input type="text" id="regid" name="regid" placeholder="회원아이디">
 		<input type="button" id="checkid" value="중복체크" onclick="chkid();">
 		<input type="password" id="regpw" name="regpw" placeholder="회원비밀번호">
-		<input type="text" placeholder="이름">
-		<input type="email" placeholder="이메일">
+		<input type="text" name="name" placeholder="이름">
+		<input type="email" name="email" placeholder="이메일">
 		
 		<!-- input type="text" id="zipcode" placeholder="우편번호">
 		<input type="button" id="zipsearch" value="우편번호검색">
 		<input type="text" placeholder="주소">
 		<input type="text" placeholder="상세주소" -->
 		
-		<input type="text" id="sample6_postcode" placeholder="우편번호">
+		<input type="text" id="sample6_postcode" name="zipcode" placeholder="우편번호">
 		<input type="button" id="zipsearch" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-		<input type="text" id="sample6_address" placeholder="주소"><br>
-		<input type="text" id="sample6_detailAddress" placeholder="상세주소">
+		<input type="text" id="sample6_address" name="address" placeholder="주소"><br>
+		<input type="text" id="sample6_detailAddress" name="address2" placeholder="상세주소">
 		<!-- input type="text" id="sample6_extraAddress" placeholder="참고항목" -->
 		
-		
-		
-		<input type="text" placeholder="전화번호">
+		<input type="text" name="phn" placeholder="전화번호">
 		<button type="button" onclick="register();">회원가입</button>
 		<label for="form-switch"><span>가입한 회원? 로그인하세요</span></label>
 	</form>

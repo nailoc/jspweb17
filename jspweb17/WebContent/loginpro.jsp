@@ -22,7 +22,9 @@
 		}else if(result==-1) {
 			out.println("<script>alert('비밀번호가 틀립니다'); history.back();</script>");
 		}else if(result==1) {
-			out.println("<script>alert('로그인 성공입니다'); location.href='index.jsp'</script>");
+			//인증성공되면 세션생성
+			session.setAttribute("userid", id);
+			out.println("<script>alert('로그인 성공입니다'); location.href='mypage.jsp'</script>");
 		}
 	%>
 </body>
