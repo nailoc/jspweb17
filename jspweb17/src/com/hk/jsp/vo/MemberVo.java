@@ -10,6 +10,7 @@ public class MemberVo {
 	private String address;
 	private String address2;
 	private String phone;
+	private String pic;
 	
 	public String getId() {
 		return id;
@@ -58,6 +59,12 @@ public class MemberVo {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	public String getPic() { //사진파일명
+		return pic;
+	}
+	public void setPic(String pic) {
+		this.pic = pic;
 	}
 	
 	

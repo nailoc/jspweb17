@@ -9,4 +9,19 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  
+  <!-- 주석: POST방식 한글 문제를 해결하는 설정 -->
+  <filter>
+  		<filter-name>jsp set character</filter-name>
+  		<filter-class>com.hk.jsp.util.SetCharacterEncodingFilter</filter-class>
+  		
+  		<init-param>
+  			<param-name>encoding</param-name>
+  			<param-value>utf-8</param-value>
+  		</init-param>
+  </filter>
+  <filter-mapping>
+  		<filter-name>jsp set character</filter-name>
+  		<url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>

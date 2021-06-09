@@ -130,16 +130,55 @@ public class MemberDao {
 	}
 	
 	// mypage.jsp 회원정보
-	public String getMemberById(String id) throws Exception {
-		String rst = "";
+	public MemberVo getMemberById(String id) throws Exception {
+		//String rst = "";
+		MemberVo rst = new MemberVo();
 		connectDB();
-		String sql = String.format("select name from member where id='%s'",id);
+		String sql = String.format("select name, email, zip_num, address, address2, phone, pic from member where id='%s'",id);
 		rs = stmt.executeQuery(sql);
 		while(rs.next()) {
-			rst = rs.getString("name");
+			rst.setName(rs.getString("name"));
+			rst.setEmail(rs.getString("email"));
+			rst.setZip_num(rs.getString("zip_num"));
+			rst.setAddress(rs.getString("address"));
+			rst.setAddress2(rs.getString("address2"));
+			rst.setPhone(rs.getString("phone"));
+			rst.setPic(rs.getString("pic"));
 		}
 		closeDB();
 		return rst;
 	}
 	
+	// modifypro.jsp 회원정보 수정
+	 public int modifyMember(MemberVo memvo) throws Exception {
+		 int rst =0;
+		 connectDB();
+		 StringBuffer sb = new StringBuffer("");
+		 sb.append("update member set name=?, email=?, zip_num=?, ");
+		 sb.append("\n address=?, address2=?, phone=?, pic=? where id=?");
+		 String sql = sb.toString();
+		 pstmt = conn.prepareStatement(sql);
+		 pstmt.setString(1, memvo.getName());
+		 pstmt.setString(2, memvo.getEmail());
+		 pstmt.setString(3, memvo.getZip_num());
+		 pstmt.setString(4, memvo.getAddress());
+		 pstmt.setString(5, memvo.getAddress2());
+		 pstmt.setString(6, memvo.getPhone());
+		 pstmt.setString(7, memvo.getPic()); // 사진정보가 없으면 원래이미지 유지
+		 pstmt.setString(8, memvo.getId());
+		 rst = pstmt.executeUpdate();
+		 closeDB();
+		 return rst;
+		 
+	 }
+	 
+	 // delmempro.jsp 회원탈퇴
+	 public int withdrawMemberById(String id) throws Exception {
+		 connectDB();
+		 String sql = String.format("update member set useyn='y' where id='%s'", id);
+		 int res = stmt.executeUpdate(sql);
+		 closeDB();
+		 return res;
+	 }
+	 
 }
